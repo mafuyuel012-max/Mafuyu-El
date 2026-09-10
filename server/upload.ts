@@ -4,12 +4,24 @@ import fs from 'fs';
 import { Request } from 'express';
 import { MediaCategory } from '../src/types.js';
 
-export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
-
-// Ensure upload directory exists
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+let uploadPath = path.join(process.cwd(), 'uploads');
+try {
+  if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+  }
+} catch {
+  // If filesystem is read-only (e.g. Vercel serverless), use /tmp/uploads
+  uploadPath = path.join('/tmp', 'uploads');
+  try {
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+  } catch {
+    // Ignore fallback errors
+  }
 }
+
+export const UPLOAD_DIR = uploadPath;
 
 // Map extensions to categories
 export function getCategoryFromExtAndMime(ext: string, mime: string): MediaCategory {

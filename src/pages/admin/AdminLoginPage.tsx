@@ -27,10 +27,12 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
     setIsLoading(true);
     try {
       await login(username.trim(), password.trim());
-      toast.success('Login berhasil! Selamat datang di Panel CMS.');
-      onNavigate('/admin');
+      toast.success('Login berhasil! Mengalihkan ke dashboard...');
+      setTimeout(() => {
+        onNavigate('/admin');
+      }, 500);
     } catch (err: any) {
-      toast.error(err.message || 'Username atau password salah.');
+      toast.error(err.message || 'Nama pengguna atau kata sandi salah. Silakan periksa kembali.');
     } finally {
       setIsLoading(false);
     }
