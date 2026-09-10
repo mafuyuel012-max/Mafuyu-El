@@ -9,43 +9,13 @@
       "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
       "is_active": true,
       "created_at": "2026-09-09T02:10:59.253Z",
-      "last_login": "2026-09-09T02:21:25.686Z"
-    },
-    {
-      "id": "user-admin-02",
-      "username": "operator",
-      "name": "Operator Sekolah",
-      "email": "operator@sdn53bengkulu.sch.id",
-      "role": "admin",
-      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
-      "is_active": true,
-      "created_at": "2026-09-09T02:10:59.253Z",
-      "last_login": "2026-09-09T02:14:38.099Z"
-    },
-    {
-      "id": "user-editor-03",
-      "username": "guru_editor",
-      "name": "Budi Santoso, S.Pd. (Editor)",
-      "email": "budi@sdn53bengkulu.sch.id",
-      "role": "editor",
-      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-      "is_active": true,
-      "created_at": "2026-09-09T02:10:59.253Z",
-      "last_login": "2026-09-09T02:14:38.216Z"
+      "last_login": "2026-09-10T00:40:03.570Z"
     }
   ],
   "user_credentials": [
     {
       "user_id": "user-superadmin-01",
       "password_hash": "$2b$10$nMFbd9NgefAKlPXbCv7YV.O98hhGd77u0DKXT.io3siYZBoYcE2jK"
-    },
-    {
-      "user_id": "user-admin-02",
-      "password_hash": "$2b$10$nMFbd9NgefAKlPXbCv7YV.ya8X4Qk2t8uDfpS9NFDewva5gomYHrK"
-    },
-    {
-      "user_id": "user-editor-03",
-      "password_hash": "$2b$10$nMFbd9NgefAKlPXbCv7YV.vKTAMlLEcU/XAJQXYuctB1acqA4F9mG"
     }
   ],
   "settings": {
@@ -178,72 +148,6 @@
       "published_at": "2026-09-07T02:10:59.560Z",
       "created_at": "2026-09-06T02:10:59.560Z",
       "updated_at": "2026-09-07T02:10:59.560Z"
-    },
-    {
-      "id": "post-2",
-      "title": "Peringatan Hari Pendidikan Nasional dan Peluncuran Pojok Baca Digital SDN 53",
-      "slug": "peringatan-hardiknas-dan-peluncuran-pojok-baca-digital",
-      "category_id": "cat-1",
-      "summary": "Dalam rangka memperingati Hari Pendidikan Nasional, SDN 53 Kota Bengkulu meresmikan Pojok Baca Digital untuk mengakselerasi kemampuan literasi siswa.",
-      "content": "\n        <p>Semangat Hari Pendidikan Nasional diwarnai dengan inovasi edukatif di SD Negeri 53 Kota Bengkulu. Sekolah secara resmi meluncurkan fasilitas <strong>Pojok Baca Digital</strong> di ruang perpustakaan dan setiap selasar kelas.</p>\n        <p>Melalui perangkat tablet edukatif dan akses koleksi ribuan e-book anak bermutu, siswa dapat membaca materi sains, sejarah, dan dongeng nusantara secara interaktif. Kegiatan ini diharapkan memperkuat pembiasaan 15 menit membaca sebelum jam pertama dimulai.</p>\n      ",
-      "cover_image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&auto=format&fit=crop&q=80",
-      "media_ids": [
-        "med-3"
-      ],
-      "author_id": "user-admin-02",
-      "author_name": "Operator Sekolah",
-      "status": "published",
-      "is_featured": true,
-      "seo_title": "Peluncuran Pojok Baca Digital SDN 53 Kota Bengkulu",
-      "seo_description": "SDN 53 Kota Bengkulu resmikan Pojok Baca Digital tingkatkan budaya literasi.",
-      "views": 188,
-      "published_at": "2026-09-04T02:10:59.560Z",
-      "created_at": "2026-09-03T02:10:59.560Z",
-      "updated_at": "2026-09-04T02:10:59.560Z"
-    },
-    {
-      "id": "post-3",
-      "title": "Aksi Bersih Lingkungan dan Penanaman Pohon Bersama Komite Sekolah (Sekolah Adiwiyata)",
-      "slug": "aksi-bersih-lingkungan-dan-penanaman-pohon-adiwiyata",
-      "category_id": "cat-5",
-      "summary": "Mewujudkan komitmen sebagai Sekolah Adiwiyata, seluruh dewan guru, siswa, dan orang tua bahu-membahu menanam 100 bibit pohon peneduh di lingkungan sekolah.",
-      "content": "\n        <p>Keluarga besar SD Negeri 53 Kota Bengkulu menggelar aksi gotong royong peduli lingkungan hidup pada Sabtu pagi. Kegiatan ini diikuti oleh ratusan siswa, wali murid, dewan guru, dan perwakilan Dinas Lingkungan Hidup Kota Bengkulu.</p>\n        <p>Selain menanam bibit pohon pucuk merah dan tabebuya, siswa juga diajak memilah sampah organik dan anorganik untuk disalurkan ke Bank Sampah Ceria SDN 53.</p>\n      ",
-      "cover_image": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200&auto=format&fit=crop&q=80",
-      "media_ids": [
-        "med-1"
-      ],
-      "author_id": "user-editor-03",
-      "author_name": "Budi Santoso, S.Pd. (Editor)",
-      "status": "published",
-      "is_featured": false,
-      "seo_title": "Aksi Bersih Lingkungan Adiwiyata SDN 53 Bengkulu",
-      "seo_description": "Program penanaman pohon dan aksi bersih lingkungan SD Negeri 53 Kota Bengkulu.",
-      "views": 115,
-      "published_at": "2026-09-01T02:10:59.560Z",
-      "created_at": "2026-08-31T02:10:59.560Z",
-      "updated_at": "2026-09-01T02:10:59.560Z"
-    },
-    {
-      "id": "post-4",
-      "title": "Pentas Seni Akhir Tahun dan Gelar Karya P5: Ragam Kreativitas Anak Bangsa",
-      "slug": "pentas-seni-dan-gelar-karya-p5-sdn-53-bengkulu",
-      "category_id": "cat-3",
-      "summary": "Gelar Karya Projek Penguatan Profil Pelajar Pancasila (P5) berlangsung semarak dengan pameran hasil karya daur ulang dan pertunjukan musik angklung.",
-      "content": "\n        <p>Gedung serbaguna SD Negeri 53 dipadati oleh antusiasme pengunjung dalam acara Pameran Karya P5. Siswa kelas 1 hingga 6 memamerkan beragam karya kerajinan tangan dari barang bekas, produk olahan makanan sehat tradisional Bengkulu, serta tarian kolosal.</p>\n      ",
-      "cover_image": "https://images.unsplash.com/photo-1460518451282-474b15672083?w=1200&auto=format&fit=crop&q=80",
-      "media_ids": [
-        "med-2"
-      ],
-      "author_id": "user-superadmin-01",
-      "author_name": "Super Administrator",
-      "status": "published",
-      "is_featured": false,
-      "seo_title": "Gelar Karya P5 SDN 53 Kota Bengkulu",
-      "seo_description": "Pameran karya siswa Projek Penguatan Profil Pelajar Pancasila di SDN 53 Kota Bengkulu.",
-      "views": 94,
-      "published_at": "2026-08-28T02:10:59.560Z",
-      "created_at": "2026-08-27T02:10:59.560Z",
-      "updated_at": "2026-08-28T02:10:59.560Z"
     },
     {
       "id": "post-5",
@@ -586,6 +490,87 @@
     }
   ],
   "activity_logs": [
+    {
+      "id": "log-1789000803573-vcpk",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "LOGIN",
+      "details": "Login sukses sebagai superadmin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:40:03.573Z"
+    },
+    {
+      "id": "log-1789000674519-681s",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "LOGIN",
+      "details": "Login sukses sebagai superadmin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:37:54.519Z"
+    },
+    {
+      "id": "log-1789000595362-4nwi",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "HAPUS_PENGGUNA",
+      "details": "Menghapus akun pengguna: guru_editor",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:36:35.362Z"
+    },
+    {
+      "id": "log-1789000593870-lyt7",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "HAPUS_PENGGUNA",
+      "details": "Menghapus akun pengguna: operator",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:36:33.870Z"
+    },
+    {
+      "id": "log-1789000578632-l0tk",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "LOGIN",
+      "details": "Login sukses sebagai superadmin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:36:18.632Z"
+    },
+    {
+      "id": "log-1789000259253-jshk",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "LOGIN",
+      "details": "Login sukses sebagai superadmin",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:30:59.253Z"
+    },
+    {
+      "id": "log-1789000104520-ckp5",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "HAPUS_BERITA",
+      "details": "Menghapus berita: \"Pentas Seni Akhir Tahun dan Gelar Karya P5: Ragam Kreativitas Anak Bangsa\"",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:28:24.520Z"
+    },
+    {
+      "id": "log-1789000101856-rjw9",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "HAPUS_BERITA",
+      "details": "Menghapus berita: \"Aksi Bersih Lingkungan dan Penanaman Pohon Bersama Komite Sekolah (Sekolah Adiwiyata)\"",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:28:21.856Z"
+    },
+    {
+      "id": "log-1789000098842-bag3",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "HAPUS_BERITA",
+      "details": "Menghapus berita: \"Peringatan Hari Pendidikan Nasional dan Peluncuran Pojok Baca Digital SDN 53\"",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T00:28:18.842Z"
+    },
     {
       "id": "log-1788920485687-tqyc",
       "user_id": "user-superadmin-01",
