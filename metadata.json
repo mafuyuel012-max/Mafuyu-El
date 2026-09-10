@@ -1,0 +1,6 @@
+{
+  "name": "SD Negeri 53 Kota Bengkulu",
+  "description": "Website resmi publikasi sekolah dan portal CMS SD Negeri 53 Kota Bengkulu",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
