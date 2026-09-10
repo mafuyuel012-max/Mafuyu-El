@@ -421,7 +421,31 @@ export const api = {
   deleteDownload: (id: string) => request<{ message: string }>(`/api/downloads/${id}`, { method: 'DELETE' }),
 
   // Menus
-  getMenus: (isAdmin = false) => request<MenuItem[]>(`/api/menus${isAdmin ? '?isAdmin=true' : ''}`),
+  getMenus: async (isAdmin = false): Promise<MenuItem[]> => {
+    try {
+      const res = await request<MenuItem[]>(`/api/menus${isAdmin ? '?isAdmin=true' : ''}`);
+      if (Array.isArray(res) && res.length > 0) return res;
+      return [
+        { id: 'menu-1', label: 'Beranda', path: '/', order: 1, is_active: true, target: '_self' },
+        { id: 'menu-2', label: 'Profil', path: '/profil', order: 2, is_active: true, target: '_self' },
+        { id: 'menu-3', label: 'Berita', path: '/berita', order: 3, is_active: true, target: '_self' },
+        { id: 'menu-4', label: 'Pengumuman', path: '/pengumuman', order: 4, is_active: true, target: '_self' },
+        { id: 'menu-5', label: 'Galeri', path: '/galeri', order: 5, is_active: true, target: '_self' },
+        { id: 'menu-6', label: 'Download', path: '/download', order: 6, is_active: true, target: '_self' },
+        { id: 'menu-7', label: 'Kontak', path: '/kontak', order: 7, is_active: true, target: '_self' },
+      ];
+    } catch {
+      return [
+        { id: 'menu-1', label: 'Beranda', path: '/', order: 1, is_active: true, target: '_self' },
+        { id: 'menu-2', label: 'Profil', path: '/profil', order: 2, is_active: true, target: '_self' },
+        { id: 'menu-3', label: 'Berita', path: '/berita', order: 3, is_active: true, target: '_self' },
+        { id: 'menu-4', label: 'Pengumuman', path: '/pengumuman', order: 4, is_active: true, target: '_self' },
+        { id: 'menu-5', label: 'Galeri', path: '/galeri', order: 5, is_active: true, target: '_self' },
+        { id: 'menu-6', label: 'Download', path: '/download', order: 6, is_active: true, target: '_self' },
+        { id: 'menu-7', label: 'Kontak', path: '/kontak', order: 7, is_active: true, target: '_self' },
+      ];
+    }
+  },
   updateMenus: (menus: MenuItem[]) =>
     request<{ message: string; menus: MenuItem[] }>('/api/menus', {
       method: 'PUT',
@@ -503,4 +527,23 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+
+  // Supabase Cloud Database Management
+  getSupabaseStatus: () =>
+    request<{
+      isConfigured: boolean;
+      connected: boolean;
+      message: string;
+      url?: string | null;
+    }>('/api/supabase/status'),
+  testSupabase: () =>
+    request<{ connected: boolean; message: string; url?: string }>('/api/supabase/test', {
+      method: 'POST',
+    }),
+  syncToSupabase: () =>
+    request<{ success: boolean; synced: Record<string, number>; message: string }>(
+      '/api/supabase/sync',
+      { method: 'POST' }
+    ),
+  getSupabaseSchema: () => request<{ sql: string }>('/api/supabase/schema'),
 };

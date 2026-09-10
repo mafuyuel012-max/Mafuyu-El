@@ -20,10 +20,20 @@ interface HeaderProps {
   onNavigate: (path: string) => void;
 }
 
+export const DEFAULT_NAV_MENUS: MenuItem[] = [
+  { id: 'menu-1', label: 'Beranda', path: '/', order: 1, is_active: true, target: '_self' },
+  { id: 'menu-2', label: 'Profil', path: '/profil', order: 2, is_active: true, target: '_self' },
+  { id: 'menu-3', label: 'Berita', path: '/berita', order: 3, is_active: true, target: '_self' },
+  { id: 'menu-4', label: 'Pengumuman', path: '/pengumuman', order: 4, is_active: true, target: '_self' },
+  { id: 'menu-5', label: 'Galeri', path: '/galeri', order: 5, is_active: true, target: '_self' },
+  { id: 'menu-6', label: 'Download', path: '/download', order: 6, is_active: true, target: '_self' },
+  { id: 'menu-7', label: 'Kontak', path: '/kontak', order: 7, is_active: true, target: '_self' },
+];
+
 export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate }) => {
   const { settings } = useSettings();
   const { user } = useAuth();
-  const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [menus, setMenus] = useState<MenuItem[]>(DEFAULT_NAV_MENUS);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -32,7 +42,9 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate }) => {
     const fetchMenus = async () => {
       try {
         const data = await api.getMenus();
-        setMenus(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setMenus(data.filter((m) => m.is_active));
+        }
       } catch (err) {
         console.error('Failed to load menus:', err);
       }
@@ -83,7 +95,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate }) => {
               )}
               <div className="hidden md:flex items-center gap-2 text-slate-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span>NPSN: {settings?.npsn || '10702672'} â€¢ Akreditasi {settings?.akreditasi || 'A'}</span>
+                <span>NPSN: {settings?.npsn || '10702672'} • Akreditasi {settings?.akreditasi || 'A'}</span>
               </div>
             </div>
 
