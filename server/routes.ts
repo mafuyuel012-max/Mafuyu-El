@@ -31,6 +31,12 @@ import {
   MenuItem,
   User,
 } from '../src/types.js';
+import {
+  getSupabaseClient,
+  isSupabaseConfigured,
+  testSupabaseConnection,
+  syncLocalToSupabase,
+} from './supabase.js';
 
 export const router = express.Router();
 
@@ -74,6 +80,65 @@ router.post('/auth/change-password', authenticate, (req: AuthRequest, res: Respo
   saveDatabase(db);
   logActivity(req.user!.id, req.user!.name, 'GANTI_PASSWORD', 'Pengguna mengubah kata sandi', req.ip);
   res.json({ message: 'Kata sandi berhasil diperbarui.' });
+});
+
+// ----------------------------------------------------
+// SUPABASE CLOUD DATABASE ROUTES
+// ----------------------------------------------------
+router.get('/supabase/status', async (req: Request, res: Response) => {
+  const isConfigured = isSupabaseConfigured();
+  if (!isConfigured) {
+    res.json({
+      isConfigured: false,
+      connected: false,
+      message: 'Supabase belum dikonfigurasi. Menggunakan penyimpanan lokal (db.json).',
+      url: null,
+    });
+    return;
+  }
+
+  const check = await testSupabaseConnection();
+  res.json({
+    isConfigured: true,
+    connected: check.connected,
+    message: check.message,
+    url: check.url,
+  });
+});
+
+router.post('/supabase/test', authenticate, requireRole('superadmin', 'admin'), async (req: AuthRequest, res: Response) => {
+  const result = await testSupabaseConnection();
+  res.json(result);
+});
+
+router.post('/supabase/sync', authenticate, requireRole('superadmin', 'admin'), async (req: AuthRequest, res: Response) => {
+  try {
+    const result = await syncLocalToSupabase();
+    logActivity(
+      req.user!.id,
+      req.user!.name,
+      'SYNC_SUPABASE',
+      'Migrasi dan sinkronisasi data lokal ke Supabase Cloud',
+      req.ip
+    );
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Gagal melakukan sinkronisasi data ke Supabase.' });
+  }
+});
+
+router.get('/supabase/schema', (req: Request, res: Response) => {
+  try {
+    const schemaPath = path.join(process.cwd(), 'supabase-schema.sql');
+    if (fs.existsSync(schemaPath)) {
+      const sql = fs.readFileSync(schemaPath, 'utf-8');
+      res.json({ sql });
+    } else {
+      res.status(404).json({ error: 'Berkas skema supabase-schema.sql tidak ditemukan.' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ----------------------------------------------------

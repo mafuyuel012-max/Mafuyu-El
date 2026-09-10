@@ -23,9 +23,9 @@
     "school_short_name": "SDN 53 Bengkulu",
     "tagline": "Membentuk Generasi Berkarakter, Unggul, Religius, dan Berwawasan Lingkungan",
     "description": "SD Negeri 53 Kota Bengkulu adalah sekolah dasar negeri unggulan yang berkomitmen mewujudkan pendidikan berkualitas, berakhlak mulia, dan berprestasi di Kota Bengkulu.",
-    "npsn": "10702672",
+    "npsn": "10702634",
     "akreditasi": "A (Unggul)",
-    "logo": "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=300&auto=format&fit=crop&q=80",
+    "logo": "/uploads/LOGO_SDN_53-removebg-preview-1789002845528-581797.png",
     "favicon": "/favicon.ico",
     "background_type": "none",
     "background_value": "#f8fafc",
@@ -91,7 +91,13 @@
     "hero_subtitle": "Selamat Datang di Portal Resmi SD Negeri 53 Kota Bengkulu. Sarana Edukasi, Publikasi Prestasi, dan Keterbukaan Informasi Sekolah Terpadu.",
     "hero_button_text": "Jelajahi Profil Sekolah",
     "hero_button_link": "/profil",
-    "hero_image": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1600&auto=format&fit=crop&q=80"
+    "hero_image": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1600&auto=format&fit=crop&q=80",
+    "background_pattern": "grid",
+    "background_repeat": "cover",
+    "background_attachment": "fixed",
+    "background_overlay_color": "#ffffff",
+    "background_blur": 0,
+    "kepala_sekolah_nip": ""
   },
   "categories": [
     {
@@ -170,6 +176,21 @@
     }
   ],
   "media": [
+    {
+      "id": "med-1789002845535-7xad8",
+      "filename": "LOGO_SDN_53-removebg-preview-1789002845528-581797.png",
+      "original_name": "LOGO_SDN_53-removebg-preview.png",
+      "mime_type": "image/png",
+      "extension": "png",
+      "size": 355064,
+      "path": "uploads/LOGO_SDN_53-removebg-preview-1789002845528-581797.png",
+      "url": "/uploads/LOGO_SDN_53-removebg-preview-1789002845528-581797.png",
+      "category": "image",
+      "status": "public",
+      "uploaded_by": "Super Administrator",
+      "created_at": "2026-09-10T01:14:05.535Z",
+      "updated_at": "2026-09-10T01:14:05.535Z"
+    },
     {
       "id": "med-1",
       "filename": "upacara-senin.jpg",
@@ -490,6 +511,78 @@
     }
   ],
   "activity_logs": [
+    {
+      "id": "log-1789003957094-wg7i",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "SYNC_SUPABASE",
+      "details": "Migrasi dan sinkronisasi data lokal ke Supabase Cloud",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T01:32:37.094Z"
+    },
+    {
+      "id": "log-1789003911074-o76g",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "SYNC_SUPABASE",
+      "details": "Migrasi dan sinkronisasi data lokal ke Supabase Cloud",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T01:31:51.074Z"
+    },
+    {
+      "id": "log-1789003890855-r7xx",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "SYNC_SUPABASE",
+      "details": "Migrasi dan sinkronisasi data lokal ke Supabase Cloud",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T01:31:30.855Z"
+    },
+    {
+      "id": "log-1789003878549-te9p",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "SYNC_SUPABASE",
+      "details": "Migrasi dan sinkronisasi data lokal ke Supabase Cloud",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T01:31:18.549Z"
+    },
+    {
+      "id": "log-1789003870956-lw41",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "SYNC_SUPABASE",
+      "details": "Migrasi dan sinkronisasi data lokal ke Supabase Cloud",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T01:31:10.956Z"
+    },
+    {
+      "id": "log-1789002877255-droq",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "UPDATE_SETTINGS",
+      "details": "Memperbarui pengaturan website/tampilan sekolah",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T01:14:37.255Z"
+    },
+    {
+      "id": "log-1789002849333-zfmq",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "UPDATE_SETTINGS",
+      "details": "Memperbarui pengaturan website/tampilan sekolah",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T01:14:09.333Z"
+    },
+    {
+      "id": "log-1789002845536-9cmx",
+      "user_id": "user-superadmin-01",
+      "user_name": "Super Administrator",
+      "action": "UPLOAD_MEDIA",
+      "details": "Mengunggah 1 berkas ke Universal Media Library",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-09-10T01:14:05.536Z"
+    },
     {
       "id": "log-1789000803573-vcpk",
       "user_id": "user-superadmin-01",
