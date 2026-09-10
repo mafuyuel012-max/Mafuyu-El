@@ -34,10 +34,15 @@ export interface DatabaseSchema {
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
+const TMP_DB_FILE = path.join('/tmp', 'db.json');
 
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+// Safely ensure data directory exists without throwing in read-only serverless filesystems
+try {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+} catch {
+  // Read-only filesystem in Vercel/serverless
 }
 
 let dbInstance: DatabaseSchema | null = null;
@@ -126,6 +131,19 @@ export function getInitialSettings(): WebsiteSettings {
 }
 
 export function initializeDatabase(): DatabaseSchema {
+  // 1. Check /tmp/db.json first (runtime updates in serverless environments)
+  if (fs.existsSync(TMP_DB_FILE)) {
+    try {
+      const data = fs.readFileSync(TMP_DB_FILE, 'utf-8');
+      const parsed = JSON.parse(data);
+      dbInstance = parsed;
+      return parsed;
+    } catch (err) {
+      console.warn('Failed to parse /tmp/db.json:', err);
+    }
+  }
+
+  // 2. Check repo-bundled data/db.json
   if (fs.existsSync(DB_FILE)) {
     try {
       const data = fs.readFileSync(DB_FILE, 'utf-8');
@@ -702,12 +720,22 @@ export function getDatabase(): DatabaseSchema {
 }
 
 export function saveDatabase(data: DatabaseSchema): void {
+  dbInstance = data;
+  const jsonStr = JSON.stringify(data, null, 2);
+
+  // 1. Attempt writing to DB_FILE (standard Node / Docker runtime)
   try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
-    dbInstance = data;
-  } catch (err) {
-    console.error('Error saving database to file:', err);
-    throw err;
+    fs.writeFileSync(DB_FILE, jsonStr, 'utf-8');
+    return;
+  } catch {
+    // If read-only (e.g. Vercel serverless), continue to /tmp
+  }
+
+  // 2. Attempt writing to TMP_DB_FILE (serverless /tmp directory)
+  try {
+    fs.writeFileSync(TMP_DB_FILE, jsonStr, 'utf-8');
+  } catch {
+    // Graceful in-memory fallback
   }
 }
 

@@ -13,8 +13,8 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
   const { settings } = useSettings();
   const toast = useToast();
 
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('admin123');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,11 +34,6 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleQuickFill = (u: string, p: string) => {
-    setUsername(u);
-    setPassword(p);
   };
 
   return (
@@ -109,62 +104,15 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Demo Accounts Quick-Fill Box */}
-          <div className="pt-4 border-t border-slate-100 space-y-2.5">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">
-              Pilih Akun Pengujian (Klik untuk Isi Otomatis):
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickFill('admin', 'admin123')}
-                className="p-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200/60 text-purple-800 text-center transition-all cursor-pointer flex flex-col items-center"
-              >
-                <span className="font-bold text-xs">Superadmin</span>
-                <span className="text-[10px] text-purple-600 font-mono mt-0.5">admin</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('operator', 'operator123')}
-                className="p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200/60 text-sky-800 text-center transition-all cursor-pointer flex flex-col items-center"
-              >
-                <span className="font-bold text-xs">Operator</span>
-                <span className="text-[10px] text-sky-600 font-mono mt-0.5">operator</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('guru_editor', 'editor123')}
-                className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/60 text-amber-800 text-center transition-all cursor-pointer flex flex-col items-center"
-              >
-                <span className="font-bold text-xs">Editor Guru</span>
-                <span className="text-[10px] text-amber-600 font-mono mt-0.5">guru_editor</span>
-              </button>
-            </div>
-            <div className="bg-slate-50 p-2.5 rounded-xl text-[11px] text-slate-600 space-y-1">
-              <div className="flex justify-between font-mono">
-                <span>Superadmin:</span>
-                <span className="font-semibold text-slate-800">admin / admin123</span>
-              </div>
-              <div className="flex justify-between font-mono">
-                <span>Operator:</span>
-                <span className="font-semibold text-slate-800">operator / operator123</span>
-              </div>
-              <div className="flex justify-between font-mono">
-                <span>Editor:</span>
-                <span className="font-semibold text-slate-800">guru_editor / editor123</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Back to public link */}
         <div className="text-center">
           <button
             onClick={() => onNavigate('/')}
-            className="text-xs text-slate-400 hover:text-white transition-colors"
+            className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
-            â† Kembali ke Beranda Website Sekolah
+            ← Kembali ke Beranda Website Sekolah
           </button>
         </div>
       </div>
