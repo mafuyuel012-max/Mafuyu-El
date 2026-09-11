@@ -366,3 +366,157 @@ export async function syncLocalToSupabase(): Promise<{
     errors: errors.length > 0 ? errors : undefined,
   };
 }
+
+/**
+ * Upload a buffer directly to Supabase Storage bucket 'media'.
+ * Returns the permanent public CDN URL.
+ */
+export async function uploadToSupabaseStorage(
+  filename: string,
+  buffer: Buffer,
+  mimeType: string
+): Promise<string | null> {
+  const client = getSupabaseClient();
+  if (!client) return null;
+
+  try {
+    const bucket = 'media';
+    const cleanFilename = `${Date.now()}-${filename.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+
+    const { data, error } = await client.storage
+      .from(bucket)
+      .upload(cleanFilename, buffer, {
+        contentType: mimeType,
+        upsert: true,
+      });
+
+    if (error) {
+      console.error('Supabase Storage upload error:', error);
+      return null;
+    }
+
+    const { data: publicUrlData } = client.storage
+      .from(bucket)
+      .getPublicUrl(cleanFilename);
+
+    return publicUrlData.publicUrl;
+  } catch (err) {
+    console.error('Exception during Supabase Storage upload:', err);
+    return null;
+  }
+}
+
+/**
+ * Automatically syncs a single post creation/update to Supabase Cloud
+ */
+export async function syncPostToSupabase(post: any): Promise<void> {
+  const client = getSupabaseClient();
+  if (!client) return;
+
+  try {
+    const db = getDatabase();
+    const cat = db.categories.find((c) => c.id === post.category_id);
+    const postRecord = {
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      content: post.content,
+      excerpt: post.summary || (post.content ? post.content.replace(/<[^>]+>/g, '').substring(0, 150) : ''),
+      image: post.cover_image || '',
+      category: cat?.name || 'Umum',
+      author: post.author_name || 'Admin SDN 53',
+      views: post.views || 0,
+      status: post.status || 'published',
+      published_at: post.published_at || new Date().toISOString(),
+      created_at: post.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await client.from('posts').upsert(postRecord);
+    if (error) {
+      console.warn('Auto-sync post to Supabase failed:', error.message);
+    } else {
+      console.log('✅ Post auto-synced to Supabase Cloud:', post.title);
+    }
+  } catch (err: any) {
+    console.warn('Exception during auto-sync post to Supabase:', err?.message);
+  }
+}
+
+/**
+ * Automatically deletes a post from Supabase Cloud
+ */
+export async function deletePostFromSupabase(postId: string): Promise<void> {
+  const client = getSupabaseClient();
+  if (!client) return;
+
+  try {
+    await client.from('posts').delete().eq('id', postId);
+  } catch (err: any) {
+    console.warn('Exception during post deletion from Supabase:', err?.message);
+  }
+}
+
+/**
+ * Automatically syncs settings update to Supabase Cloud
+ */
+export async function syncSettingsToSupabase(settings: any): Promise<void> {
+  const client = getSupabaseClient();
+  if (!client) return;
+
+  try {
+    const settingsData = {
+      id: 'general',
+      nama_sekolah: settings.school_name || 'SD Negeri 53 Kota Bengkulu',
+      npsn: settings.npsn || '10702634',
+      alamat: settings.address || '',
+      telepon: settings.phone || '',
+      email: settings.email || '',
+      kepala_sekolah: settings.kepala_sekolah_nama || '',
+      nip_kepala_sekolah: settings.kepala_sekolah_nip || '',
+      sambutan_kepala_sekolah: settings.kepala_sekolah_sambutan || '',
+      foto_kepala_sekolah: settings.kepala_sekolah_foto || '',
+      logo_sekolah: settings.logo || '',
+      hero_title: settings.hero_title || '',
+      hero_subtitle: settings.hero_subtitle || '',
+      hero_image: settings.hero_image || '',
+      visi: settings.visi || '',
+      misi: Array.isArray(settings.misi) ? settings.misi.join('\n') : (settings.misi || ''),
+      facebook: settings.facebook || '',
+      instagram: settings.instagram || '',
+      youtube: settings.youtube || '',
+      jam_operasional: 'Senin - Sabtu: 07.15 - 13.00 WIB',
+      koordinat_maps: settings.maps_url || '',
+      updated_at: new Date().toISOString(),
+    };
+    await client.from('settings').upsert(settingsData);
+    console.log('✅ Settings auto-synced to Supabase Cloud');
+  } catch (err: any) {
+    console.warn('Exception during auto-sync settings to Supabase:', err?.message);
+  }
+}
+
+/**
+ * Fetches posts from Supabase Cloud to merge with local state.
+ * This guarantees that when a post is created on Device A, Device B and public visitors see it instantly.
+ */
+export async function fetchPostsFromSupabase(): Promise<any[] | null> {
+  const client = getSupabaseClient();
+  if (!client) return null;
+
+  try {
+    const { data, error } = await client
+      .from('posts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !data) {
+      return null;
+    }
+
+    return data;
+  } catch (err) {
+    console.warn('Error fetching posts from Supabase:', err);
+    return null;
+  }
+}

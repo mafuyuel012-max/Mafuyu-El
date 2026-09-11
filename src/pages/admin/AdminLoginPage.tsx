@@ -16,23 +16,30 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
+
     if (!username.trim() || !password.trim()) {
-      toast.warning('Silakan masukkan username dan password.');
+      const msg = 'Silakan masukkan username dan password.';
+      setErrorMessage(msg);
+      toast.warning(msg);
       return;
     }
 
     setIsLoading(true);
     try {
       await login(username.trim(), password.trim());
-      toast.success('Login berhasil! Mengalihkan ke dashboard...');
+      toast.success('Login berhasil! Selamat datang di dashboard...');
       setTimeout(() => {
         onNavigate('/admin');
       }, 500);
     } catch (err: any) {
-      toast.error(err.message || 'Nama pengguna atau kata sandi salah. Silakan periksa kembali.');
+      const msg = err.message || 'Nama pengguna atau kata sandi salah. Silakan periksa kembali.';
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
@@ -62,6 +69,17 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
 
         {/* Login Form Card */}
         <div className="bg-white rounded-3xl p-8 shadow-2xl border border-slate-100 space-y-6">
+          {/* Error Banner if login fails */}
+          {errorMessage && (
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5 text-rose-700 animate-shake">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 text-rose-500 mt-0.5" />
+              <div className="text-xs leading-relaxed">
+                <span className="font-bold block">Gagal Masuk</span>
+                {errorMessage}
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
@@ -74,7 +92,10 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
                   required
                   placeholder="Masukkan username Anda..."
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    if (errorMessage) setErrorMessage(null);
+                  }}
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-sky-500 font-medium text-slate-800"
                 />
               </div>
@@ -91,7 +112,10 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
                   required
                   placeholder="Masukkan password Anda..."
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errorMessage) setErrorMessage(null);
+                  }}
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-sky-500 font-medium text-slate-800"
                 />
               </div>
@@ -106,6 +130,13 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
+
+          {/* Akun bawaan hint */}
+          <div className="pt-2 border-t border-slate-100 text-center">
+            <p className="text-[11px] text-slate-400">
+              Akun default: <span className="font-mono text-slate-700 font-semibold">admin</span> / <span className="font-mono text-slate-700 font-semibold">admin123</span>
+            </p>
+          </div>
         </div>
 
         {/* Back to public link */}

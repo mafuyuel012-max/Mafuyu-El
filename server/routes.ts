@@ -36,6 +36,11 @@ import {
   isSupabaseConfigured,
   testSupabaseConnection,
   syncLocalToSupabase,
+  uploadToSupabaseStorage,
+  syncPostToSupabase,
+  deletePostFromSupabase,
+  syncSettingsToSupabase,
+  fetchPostsFromSupabase,
 } from './supabase.js';
 
 export const router = express.Router();
@@ -149,7 +154,7 @@ router.get('/settings', (req: Request, res: Response) => {
   res.json(db.settings);
 });
 
-router.put('/settings', authenticate, requireRole('superadmin', 'admin'), (req: AuthRequest, res: Response) => {
+router.put('/settings', authenticate, requireRole('superadmin', 'admin'), async (req: AuthRequest, res: Response) => {
   const db = getDatabase();
   db.settings = {
     ...db.settings,
@@ -157,15 +162,54 @@ router.put('/settings', authenticate, requireRole('superadmin', 'admin'), (req: 
   };
   saveDatabase(db);
   logActivity(req.user!.id, req.user!.name, 'UPDATE_SETTINGS', 'Memperbarui pengaturan website/tampilan sekolah', req.ip);
+  
+  // Real-time auto-sync settings to Supabase Cloud
+  syncSettingsToSupabase(db.settings).catch((err) => console.warn('Background settings sync error:', err));
+
   res.json({ message: 'Pengaturan website berhasil diperbarui.', settings: db.settings });
 });
 
 // ----------------------------------------------------
 // POSTS (BERITA) ROUTES
 // ----------------------------------------------------
-router.get('/posts', (req: Request, res: Response) => {
+router.get('/posts', async (req: Request, res: Response) => {
   const db = getDatabase();
   const { category, search, status, featured, page = '1', limit = '10', isAdmin } = req.query;
+
+  // Real-time synchronization: Fetch posts from Supabase Cloud to merge new posts from other devices
+  try {
+    const cloudPosts = await fetchPostsFromSupabase();
+    if (cloudPosts && Array.isArray(cloudPosts)) {
+      for (const cp of cloudPosts) {
+        const existingIdx = db.posts.findIndex((p) => p.id === cp.id || p.slug === cp.slug);
+        const mappedPost: Post = {
+          id: cp.id,
+          title: cp.title,
+          slug: cp.slug,
+          category_id: cp.category_id || db.categories.find((c) => c.name.toLowerCase() === (cp.category || '').toLowerCase())?.id || 'cat-1',
+          summary: cp.excerpt || (cp.content ? cp.content.replace(/<[^>]+>/g, '').substring(0, 150) : ''),
+          content: cp.content || '',
+          cover_image: cp.image || cp.cover_image || '',
+          author_id: 'user-admin-01',
+          author_name: cp.author || 'Admin SDN 53',
+          status: cp.status || 'published',
+          is_featured: Boolean(cp.is_featured),
+          views: cp.views || 0,
+          published_at: cp.published_at || cp.created_at,
+          created_at: cp.created_at || new Date().toISOString(),
+          updated_at: cp.updated_at || new Date().toISOString(),
+        };
+
+        if (existingIdx >= 0) {
+          db.posts[existingIdx] = { ...db.posts[existingIdx], ...mappedPost };
+        } else {
+          db.posts.unshift(mappedPost);
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Supabase posts sync read error:', err);
+  }
 
   let posts = [...db.posts];
 
@@ -316,6 +360,9 @@ router.post('/posts', authenticate, requireRole('superadmin', 'admin', 'editor')
   saveDatabase(db);
   logActivity(req.user!.id, req.user!.name, 'BUAT_BERITA', `Membuat berita: "${title}" [${status}]`, req.ip);
 
+  // Auto-sync new post to Supabase Cloud so all other devices see it immediately
+  syncPostToSupabase(newPost).catch((err) => console.warn('Background post auto-sync error:', err));
+
   res.status(201).json({ message: 'Berita berhasil disimpan.', post: newPost });
 });
 
@@ -382,6 +429,9 @@ router.put('/posts/:id', authenticate, requireRole('superadmin', 'admin', 'edito
   saveDatabase(db);
   logActivity(req.user!.id, req.user!.name, 'EDIT_BERITA', `Memperbarui berita: "${updatedPost.title}"`, req.ip);
 
+  // Auto-sync updated post to Supabase Cloud
+  syncPostToSupabase(updatedPost).catch((err) => console.warn('Background post auto-sync error:', err));
+
   res.json({ message: 'Berita berhasil diperbarui.', post: updatedPost });
 });
 
@@ -398,6 +448,9 @@ router.delete('/posts/:id', authenticate, requireRole('superadmin', 'admin'), (r
   db.posts = db.posts.filter((p) => p.id !== id);
   saveDatabase(db);
   logActivity(req.user!.id, req.user!.name, 'HAPUS_BERITA', `Menghapus berita: "${post.title}"`, req.ip);
+
+  // Auto-delete from Supabase Cloud
+  deletePostFromSupabase(id).catch((err) => console.warn('Background post deletion error:', err));
 
   res.json({ message: 'Berita berhasil dihapus.' });
 });
@@ -565,7 +618,7 @@ router.post(
   authenticate,
   requireRole('superadmin', 'admin', 'editor'),
   upload.array('files', 20),
-  (req: AuthRequest, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
@@ -579,16 +632,67 @@ router.post(
     for (const file of files) {
       const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
       const category = getCategoryFromExtAndMime(ext, file.mimetype);
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
+      const cleanBase = path
+        .basename(file.originalname, `.${ext}`)
+        .replace(/[^a-zA-Z0-9_-]/g, '_')
+        .substring(0, 50);
+      const generatedFilename = `${cleanBase}-${uniqueSuffix}.${ext}`;
+
+      let publicUrl = '';
+      let savedPath = '';
+
+      // 1. Prioritize Supabase Cloud Storage (Bucket: 'media')
+      if (file.buffer) {
+        try {
+          const cloudUrl = await uploadToSupabaseStorage(
+            generatedFilename,
+            file.buffer,
+            file.mimetype || 'application/octet-stream'
+          );
+          if (cloudUrl) {
+            publicUrl = cloudUrl;
+            savedPath = `supabase://media/${generatedFilename}`;
+          }
+        } catch (uploadErr) {
+          console.warn('Supabase storage upload failed, attempting local fallback:', uploadErr);
+        }
+      }
+
+      // 2. Fallback to local disk storage if cloud upload wasn't used or failed
+      if (!publicUrl) {
+        try {
+          if (!fs.existsSync(UPLOAD_DIR)) {
+            fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+          }
+          const diskFilePath = path.join(UPLOAD_DIR, generatedFilename);
+          if (file.buffer) {
+            fs.writeFileSync(diskFilePath, file.buffer);
+          }
+          publicUrl = `/uploads/${generatedFilename}`;
+          savedPath = `uploads/${generatedFilename}`;
+        } catch (diskErr) {
+          console.warn('Local disk write fallback error:', diskErr);
+          // If all fails, convert image files to base64 data URL so it never fails
+          if (file.buffer && category === 'image' && file.size < 5 * 1024 * 1024) {
+            publicUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+            savedPath = 'data:image/inline';
+          } else {
+            publicUrl = `/uploads/${generatedFilename}`;
+            savedPath = `uploads/${generatedFilename}`;
+          }
+        }
+      }
 
       const mediaItem: MediaItem = {
         id: `med-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-        filename: file.filename,
+        filename: generatedFilename,
         original_name: file.originalname,
         mime_type: file.mimetype,
         extension: ext,
         size: file.size,
-        path: `uploads/${file.filename}`,
-        url: `/uploads/${file.filename}`,
+        path: savedPath,
+        url: publicUrl,
         category,
         status: (req.body.status as any) || 'public',
         uploaded_by: req.user!.name,
